@@ -1,0 +1,162 @@
+#!/bin/bash
+
+shopt -s nullglob
+Folder="📂"
+File="📄"
+SymbLink="🔗"
+Image="🖼 "
+Music="🎵"
+declare -i level
+dir_count=0
+file_count=0
+#initialiser les noms de mes options
+OPTSTRING=cimh
+
+# initaliser lindex d'option a 1
+OPTIND=1
+
+#les options
+while getopts "$OPTSTRING" opt; do
+    case "$opt" in
+        c)
+            option_color="true"
+            ;;
+        i)
+            option_icon="true"
+            ;;
+        m)
+            option_img="true"
+            ;;
+	h)
+	    echo "$(tput bold) ( HELP ) : showTree [options]... [argument] [level]
+
+               -c : activez cette option pour mettre en valeur les dossiers et les fichiers en utilisant différentes couleurs.
+
+               -i : activez cette option pour afficher des icônes devant chaque fichier ou dossier, afin de mieux les identifier.
+
+               -m : activez cette option pour afficher la listes des images trouvee avec la possibilete de les affiche en les selectioner.
+
+                level: spécifiez le niveau de profondeur de l'arborescence que vous souhaitez afficher"
+            exit 0
+            ;;	    
+        \?)
+            echo -e "$(tput bold) Error : option invalide !" >&2
+            exit 1
+            ;;
+    esac
+done
+
+# Shift les options a gauche
+shift "$((OPTIND-1))"
+
+
+clear
+echo -e "\e[1;41m                                        showTree                                                                                                                             \e[0m"
+echo " "
+cross(){
+  dir_count=$(($dir_count + 1))
+  local icon=""
+  local directory=$1
+  local prefix=$2 
+  local level=$3
+  local items=("$directory"/*)
+  local item_count=${#items[@]}
+  
+  
+#prcourire les sous_repertoire et les atribues des touches selon le type
+  for idx in "${!items[@]}"; do
+            local item=${items[$idx]}
+            local item_prefix=" │   "
+            local pointer=" ├──> "
+
+            if [[ $idx -eq $((item_count-1)) ]];then
+                 pointer=" └──> "
+                 item_prefix="     "
+            fi
+            
+            
+            #option du couleur
+	    if [[ "$option_color" == "true" ]];then
+           if [[ -d ${item} ]];then		    
+		        color="\e[1;31m"
+            elif [[ -f ${item} ]];then
+		    if [[ -h ${item} ]];then
+                        color="\e[1;34m"
+		    elif [[ ${item} == *.txt ]];then 
+                        color="\e[1;33m"
+            elif [[ ${item} == *.png || ${item} == *.jpg || ${item} == *.jpeg ]];then 
+                        color="\e[1;32m"		
+            elif [[ ${item} =~ *.mp3 ]];then	
+                        color="\e[1;31m"
+		    else
+			   color=""
+		    fi
+           fi
+	    fi
+	    
+	    #option des icones
+	    if [[ "$option_icon" == "true" ]];then
+            if [[ -d ${item} ]];then		    
+                        icon=$Folder
+            elif [[ -f ${item} ]];then
+		           if [[ -h ${item} ]];then
+                        icon=$SymbLink 
+		           elif [[ ${item} == *.txt ]];then 
+                        icon=$File
+                   elif [[ ${item} == *.png || ${item} == *.jpg || ${item} == *.jpeg ]];then 
+                        icon=$Image		
+                   elif [[ ${item} == *.mp3 ]];then	
+                        icon=$Music
+		    else
+                           icon=$File
+		    fi
+            fi
+	    fi
+	    
+	    
+	    #options des imanges
+            [[ "$option_img" == "true" ]] && [[ ${item} == *.png || ${item} == *.jpg || ${item} == *.jpeg ]] && tab+=( ${item} )	    
+	    
+            #afficher le sous_reperttoire avec tous ces touches
+            #tester level
+            echo -e "\ue445${prefix}${pointer}${icon}${color}$(tput bold)${item##*/}\e[0m"
+	    [ -d ${item} ] && if [[ $level -lt 2 ]];then
+	         dir_count=$(($dir_count + 1))
+                 continue
+            fi
+            #recomencer tous avec le sous sous_repertoire  
+            [ -d "$item" ] &&
+            cross "$item" "${prefix}$item_prefix" $level-1 ||
+            file_count=$((file_count + 1))
+  done
+}
+root="."
+[ "$#" -ne 0 ] && root="$1"
+#affichage de répertoire pére
+printf "\e[1;41m  ${Folder}$1  \e[0m"
+echo " "
+cross $root  ""  $2
+echo "le nombre totale des fichies est : $file_count"
+echo "le nombre totale des repertoire est  : $dir_count"
+echo " "
+echo -e "\e[1;41m                                        showTree                                                                                                                                  \e[0m"
+echo " "
+echo " "
+
+
+#manipulage des images
+if [[ "$option_img" == "true" ]];then 
+export PS3="  Select an image ( by number) : " 
+
+echo -e "\e[1;42m                                      display image                                                                                                                               \e[0m"
+
+select i in ${tab[@]} quitter ;do
+        if [[ $i == "quitter" ]];then
+                break
+        else
+                fim "$i"
+        fi
+done
+echo -e "\e[1;42m                                      display image                                                                                                                               \e[0m"
+fi
+shopt -u nullglob
