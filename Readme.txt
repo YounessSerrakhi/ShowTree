@@ -1,59 +1,53 @@
-Bienvenue dans le script bash  "showTree" pour l'affichage d'arborescence de fichiers !
+Welcome to the "showTree" bash script for file tree display!
 
 
 
 
-Ce script vous permet de visualiser l'arborescence de vos fichiers de manière claire 
-et esthétique. Vous avez la possibilité de personnaliser l'affichage grâce aux options suivantes :
+This script allows you to visualize the tree structure of your files in a clear way
+and aesthetic. You can customize the display with the following options:
 
--c : activez cette option pour mettre en valeur les dossiers et les fichiers en utilisant différentes couleurs.
+-c: Enable this option to highlight folders and files using different colors.
 
--i : activez cette option pour afficher des icônes devant chaque fichier ou dossier, afin de mieux les identifier.
+-i: activate this option to display icons in front of each file or folder, in order to better identify them.
 
--m : activez cette option pour afficher la listes des images trouvee avec la possibilete de les affiche en les selectioner.
+-m: activate this option to display the list of images found with the possibility of displaying them by selecting them.
 
--h: activez cette option pour afficher une liste des options qui vous pouver les utuliser
+-h: enable this option to display a list of options you can use
 
-level: spécifiez le niveau de profondeur de l'arborescence que vous souhaitez afficher. Par exemple, si vous indiquez
-"level=2", seuls les dossiers et fichiers du premier et du deuxième niveau seront affichés.
-
-
-
-
-
-Pour utiliser ce script, il vous suffit de lancer la commande suivante :
-
-./showTree -[options]... [chemin_du_dossier] [level]
+level: specify the depth level of the tree you want to display. For example, if you specify
+"level=2", only the first and second level folders and files will be displayed.
 
 
 
 
 
-Exemple :
+To use this script, just run the following command:
 
-./showTree -ci  /home/utilisateur/documents 2
-
-Cette commande affichera l'arborescence des dossiers et fichiers contenus dans /home/utilisateur/documents 
-en utilisant les couleurs et les icônes, et en limitant l'affichage au premier et au deuxième niveau
+./showTree -[options]... [folder_path] [level]
 
 
 
 
 
-dépendances
-Ce script nécessite les commandes fim pour fonctionner correctement. Assurez-vous de les avoir installées avant de lancer le script.
+Example :
+
+./showTree -ci /home/user/documents 2
+
+This command will display the tree of folders and files contained in /home/user/documents
+using colors and icons, and limiting the display to the first and second level
 
 
 
 
 
-auteur & realisateur
-Ce script a été créé par: 
+Dependencies
+This script requires fim commands to work properly. Make sure you have them installed before running the script.
 
+
+
+
+
+author & director
+This script was created by:
 
 [SERRAKHI YOUNESS] & [ELBCIR ABDELHADI].
-
-
-
-
-
